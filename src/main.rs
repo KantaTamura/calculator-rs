@@ -15,11 +15,18 @@ impl Source {
     fn next(&mut self) {
         self.pos += 1;
     }
+
+    fn peek(&mut self) -> Option<char> {
+        if self.pos >= self.form.len() {
+            panic!("over length!!")
+        }
+        self.form.chars().nth(self.pos)
+    }
 }
 
 fn main() {
-    let mut form = Parser::new("1987+1234");
-    println!("{:?}", form.number());
+    let mut form = Parser::new("12+45");
+    println!("{:?}", form.expr());
 
     println!("{:?}", form);
 }
@@ -36,12 +43,29 @@ impl Parser {
         }
     }
 
-    pub fn next(&mut self) {
+    fn next(&mut self) {
         self.source.next();
     }
 
-    pub fn number(&mut self) -> i32 {
+    fn peek(&mut self) -> Option<char> {
+        self.source.peek()
+    }
+
+    fn number(&mut self) -> i32 {
         self.number_str().parse::<i32>().unwrap()
+    }
+
+    fn expr(&mut self) -> i32 {
+        let mut x = self.number();
+        match self.peek() {
+            None => {-1}
+            Some('+') => {
+                self.next();
+                x += self.number();
+                x
+            }
+            Some(_) => {-1}
+        }
     }
 
     // number := 1|2|3|4|5|6|7|8|9|0 +
