@@ -13,6 +13,10 @@ impl Source {
     }
 }
 
+fn main() {
+
+}
+
 // number := 1|2|3|4|5|6|7|8|9|0 +
 fn number(mut s: Source) -> String {
     let start = s.pos;
@@ -30,28 +34,28 @@ fn number(mut s: Source) -> String {
     s.form.into_string()
 }
 
-#[test]
-fn number_test() {
-    let form_0 = Source::new("");
-    let form_1 = Source::new("1");
-    let form_2 = Source::new("25");
-    let form_3 = Source::new("1+1");
-    let form_4 = Source::new("12+21+43");
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    // 先頭の連続する数字を返す
-    assert_eq!(number(form_0), "");
-    assert_eq!(number(form_1), "1");
-    assert_eq!(number(form_2), "25");
-    assert_eq!(number(form_3), "1");
-    assert_eq!(number(form_4), "12");
+    #[test]
+    fn number_test() {
+        let form_0 = Source::new("");
+        let form_1 = Source::new("1");
+        let form_2 = Source::new("25");
+        let form_3 = Source::new("1+1");
+        let form_4 = Source::new("12+21+43");
 
-    let form_5 = Source::new("123+456");
+        // 先頭の連続する数字を返す
+        assert_eq!(number(form_0), "");
+        assert_eq!(number(form_1), "1");
+        assert_eq!(number(form_2), "25");
+        assert_eq!(number(form_3), "1");
+        assert_eq!(number(form_4), "12");
 
-    // i32型に変換
-    assert_eq!(number(form_5).parse::<i32>().unwrap(), 123);
-}
+        let form_5 = Source::new("123+456");
 
-fn main() {
-    let text = Source::new("12+");
-    println!("{:#?}\n", number(text));
+        // i32型に変換
+        assert_eq!(number(form_5).parse::<i32>().unwrap(), 123);
+    }
 }
