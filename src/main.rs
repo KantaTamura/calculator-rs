@@ -114,4 +114,15 @@ mod tests {
         // i32型に変換
         assert_eq!(form_5.number(), 123);
     }
+
+    #[test]
+    fn expr_test() {
+        let mut form_0 = Parser::new("12+34+56");
+        let mut form_1 = Parser::new("1-2-3");
+        let mut form_2 = Parser::new("1-2+3");
+
+        assert_eq!(form_0.expr(), 102);
+        assert_eq!(form_1.expr(), -4);
+        assert_eq!(form_2.expr(), 2);
+    }
 }
