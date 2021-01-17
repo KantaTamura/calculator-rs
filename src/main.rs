@@ -22,7 +22,7 @@ impl Source {
 }
 
 fn main() {
-    let mut form = Parser::new("12+45");
+    let mut form = Parser::new("12+45+12+1");
     println!("{:?}", form.expr());
 }
 
@@ -55,15 +55,17 @@ impl Parser {
 
     fn expr(&mut self) -> i32 {
         let mut x = self.number();
-        match self.peek() {
-            None => {-1}
-            Some('+') => {
-                self.next();
-                x += self.number();
-                x
+        loop {
+            match self.peek() {
+                None => { break; }
+                Some('+') => {
+                    self.next();
+                    x += self.number();
+                }
+                Some(_) => { break; }
             }
-            Some(_) => {-1}
         }
+        x
     }
 
     // number := 1|2|3|4|5|6|7|8|9|0 +
