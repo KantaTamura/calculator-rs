@@ -22,7 +22,7 @@ impl Source {
 }
 
 fn main() {
-    let mut form = Parser::new("12+45+12+1");
+    let mut form = Parser::new("12+45-12+1");
     println!("{:?}", form.expr());
 }
 
@@ -61,6 +61,10 @@ impl Parser {
                 Some('+') => {
                     self.next();
                     x += self.number();
+                }
+                Some('-') => {
+                    self.next();
+                    x -= self.number();
                 }
                 Some(_) => { break; }
             }
