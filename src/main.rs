@@ -17,9 +17,6 @@ impl Source {
     }
 
     fn peek(&mut self) -> Option<char> {
-        if self.pos >= self.form.len() {
-            panic!("over length!!")
-        }
         self.form.chars().nth(self.pos)
     }
 }
@@ -27,8 +24,6 @@ impl Source {
 fn main() {
     let mut form = Parser::new("12+45");
     println!("{:?}", form.expr());
-
-    println!("{:?}", form);
 }
 
 #[derive(Debug)]
@@ -52,7 +47,10 @@ impl Parser {
     }
 
     fn number(&mut self) -> i32 {
-        self.number_str().parse::<i32>().unwrap()
+        match self.number_str().parse::<i32>() {
+            Ok(num) => { num }
+            Err(e) => { panic!("{}", e) }
+        }
     }
 
     fn expr(&mut self) -> i32 {
@@ -70,25 +68,19 @@ impl Parser {
 
     // number := 1|2|3|4|5|6|7|8|9|0 +
     fn number_str(&mut self) -> String {
-        // 読み込み開始位置
-        let read_start = self.source.pos;
-        let form_enu = self.source.form.chars().enumerate();
-
-        for (iter, fig) in self.source.form.chars().enumerate() {
-            // 読み込み開始位置まで読み飛ばし
-            if iter < read_start { continue; }
-            self.source.pos = iter;
-            // 数字でなければ、そこまでの数字を返す
-            if !fig.is_numeric() {
-                return form_enu
-                    .filter(|&(i, _)| i >= read_start && i < iter)
-                    .fold("".to_string(), |s, (_, c)| format!("{}{}", s, c));
+        let mut sb = String::new();
+        loop {
+            match self.peek() {
+                Some(c) => {
+                    if c.is_numeric() {
+                        sb.push(c);
+                        self.next();
+                    } else { break; }
+                }
+                None => { break; }
             }
         }
-
-        form_enu
-            .filter(|&(i, _)| i >= read_start)
-            .fold("".to_string(), |s, (_, c)| format!("{}{}", s, c))
+        sb
     }
 }
 
