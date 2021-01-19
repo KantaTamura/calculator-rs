@@ -22,7 +22,7 @@ impl Source {
 }
 
 fn main() {
-    let mut form = Parser::new("2*3-2*2");
+    let mut form = Parser::new("(2+3)*4");
     println!("{:?}", form.expr());
 }
 
@@ -73,22 +73,34 @@ impl Parser {
     }
 
     fn term(&mut self) -> i32 {
-        let mut x = self.number();
+        let mut x = self.factor();
         loop {
             match self.peek() {
                 None => { break; }
                 Some('*') => {
                     self.next();
-                    x *= self.number();
+                    x *= self.factor()
                 }
                 Some('/') => {
                     self.next();
-                    x /= self.number();
+                    x /= self.factor();
                 }
                 Some(_) => { break; }
             }
         }
         x
+    }
+
+    fn factor(&mut self) -> i32 {
+        if let Some('(') = self.peek() {
+            self.next();
+            let ret = self.expr();
+            if let Some(')') = self.peek() {
+                self.next();
+            }
+            return ret;
+        }
+        self.number()
     }
 
     // number := 1|2|3|4|5|6|7|8|9|0 +
